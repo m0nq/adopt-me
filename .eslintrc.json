@@ -1,0 +1,18 @@
+{
+    "extends": [
+        "eslint:recommended"
+    ],
+    "plugins": [],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "env": {
+        "es2024": true,
+        "browser": true,
+        "node": true
+    }
+}
