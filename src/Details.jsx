@@ -21,7 +21,7 @@ const Details = () => {
     return <div className="loading-pane">There was an error. Please refresh and try again...</div>;
   }
 
-  const pet = results.data?.pets[0];
+  const pet = results?.data?.pets[0];
 
   return (
     <div className="details">
