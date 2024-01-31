@@ -21,17 +21,17 @@ export default class Carousel extends Component {
 
     return (
       <div className="carousel">
-        <img src={images[active]} alt="animal hero"/>
+        <img src={images[active]} alt="animal"/>
         <div className="carousel-smaller">
           {images.map((photo, i) => {
             return (
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
-              <img onClick={this.handleIndexClick}
-                data-index={i}
-                key={photo}
+              // eslint-disable-next-line
+              <img key={photo}
                 src={photo}
                 className={i === active ? 'active' : ''}
-                alt="animal thumbnail"/>
+                alt="animal thumbnail"
+                onClick={this.handleIndexClick}
+                data-index={i}/>
             );
           })}
         </div>

@@ -1,15 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
+import { lazy } from 'react';
 import { useContext } from 'react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import AdoptedPetContext from './AdoptedPetContext';
 
+import AdoptedPetContext from './AdoptedPetContext';
 import Carousel from './Carousel';
 import ErrorBoundary from './ErrorBoundary';
 import fetchPet from './fetchPet';
-import Modal from './Modal';
+
+const Modal = lazy(() => import('./Modal'));
 
 const Details = () => {
   const [showModal, setShowModal] = useState(false);
@@ -37,10 +39,8 @@ const Details = () => {
       <Carousel images={pet.images}/>
       <div>
         <h1>{pet.name}</h1>
-        <h2>
-          {pet.animal} - {pet.breed} - {pet.city}, {pet.state}
-          <button onClick={() => setShowModal(true)}>Adopt</button>
-        </h2>
+        <h2>{`${pet.animal} — ${pet.breed} — ${pet.city}, ${pet.state}`}</h2>
+        <button onClick={() => setShowModal(true)}>Adopt {pet.name}</button>
         <p>{pet.description}</p>
         {showModal ? (
           <Modal>
