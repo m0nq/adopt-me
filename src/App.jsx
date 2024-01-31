@@ -4,9 +4,7 @@ import { Suspense } from 'react';
 import { lazy } from 'react';
 import { useState } from 'react';
 import React from 'react';
-import { createRoot } from 'react-dom/client';
 import { Link } from 'react-router-dom';
-import { BrowserRouter } from 'react-router-dom';
 import { Routes } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 
@@ -19,7 +17,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: Infinity,
-      cacheTime: Infinity
+      cacheTime: Infinity,
+      suspense: true
     }
   }
 });
@@ -29,29 +28,25 @@ const App = () => {
 
   return (
     <div>
-      <BrowserRouter>
-        <AdoptedPetContext.Provider value={adoptedPet}>
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback={
-              <div className="loading-pane">
-                <h2 className="loader">🐶</h2>
-              </div>
-            }>
-              <header>
-                <Link to="/">Adopt Me!</Link>
-              </header>
-              <Routes>
-                <Route path="/details/:id" element={<DetailsErrorBoundary/>}/>
-                <Route path="/" element={<SearchParams/>}/>
-              </Routes>
-            </Suspense>
-          </QueryClientProvider>
-        </AdoptedPetContext.Provider>
-      </BrowserRouter>
+      <AdoptedPetContext.Provider value={adoptedPet}>
+        <QueryClientProvider client={queryClient}>
+          <Suspense fallback={
+            <div className="loading-pane">
+              <h2 className="loader">🐶</h2>
+            </div>
+          }>
+            <header>
+              <Link to="/">Adopt Me!</Link>
+            </header>
+            <Routes>
+              <Route path="/details/:id" element={<DetailsErrorBoundary/>}/>
+              <Route path="/" element={<SearchParams/>}/>
+            </Routes>
+          </Suspense>
+        </QueryClientProvider>
+      </AdoptedPetContext.Provider>
     </div>
   );
 };
 
-const container = document.querySelector('#root');
-const root = createRoot(container);
-root.render(<App/>);
+export default App;
