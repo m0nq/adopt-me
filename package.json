@@ -10,7 +10,7 @@
         "build:server": "vite build --outDir ../dist/server --ssr ServerApp.jsx",
         "build": "npm run build:client && npm run build:server",
         "preview": "vite preview",
-        "lint": "eslint \"src/**/*.{js,jsx}\" --quiet",
+        "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\" --quiet",
         "start": "node --experimental-fetch server.js"
     },
     "keywords": [],
@@ -33,6 +33,7 @@
         "@vitejs/plugin-react": "^4.2.1",
         "autoprefixer": "^10.4.17",
         "eslint": "^8.56.0",
+        "eslint-import-resolver-typescript": "^3.6.1",
         "eslint-plugin-import": "^2.29.1",
         "eslint-plugin-jsx-a11y": "^6.8.0",
         "eslint-plugin-react": "^7.33.2",

@@ -4,10 +4,10 @@ import { StaticRouter } from 'react-router-dom/server';
 import App from './App';
 
 export default (url, opts) => {
-  return renderToPipeableStream(
-    <StaticRouter location={url}>
-      <App/>
-    </StaticRouter>,
-    opts
-  );
-}
+	return renderToPipeableStream(
+		<StaticRouter location={url}>
+			<App/>
+		</StaticRouter>,
+		opts
+	);
+};
