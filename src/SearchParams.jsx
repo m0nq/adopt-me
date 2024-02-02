@@ -1,4 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTransition } from 'react';
+import { useMemo } from 'react';
+import { useDeferredValue } from 'react';
 import { useState } from 'react';
 import { useContext } from 'react';
 
@@ -17,10 +20,13 @@ const SearchParams = () => {
   });
   const [animal, setAnimal] = useState('');
   const [breeds] = useBreedList(animal);
+  const [isPending, startTransition] = useTransition();
   const [adoptedPet] = useContext(AdoptedPetContext);
 
   const results = useQuery({ queryKey: ['search', requestParams], queryFn: fetchSearch });
   const pets = results?.data?.pets ?? [];
+  const deferredPets = useDeferredValue(pets);
+  const renderedPets = useMemo(() => <Results pets={deferredPets}/>, [deferredPets]);
 
   return (
     <div className="search-params">
@@ -32,7 +38,9 @@ const SearchParams = () => {
           breed: formData.get('breed') ?? '',
           location: formData.get('location') ?? ''
         };
-        setRequestParams(obj);
+        startTransition(() => {
+          setRequestParams(obj);
+        });
       }}>
         {adoptedPet ? (
           <div className="pet image-container">
@@ -57,7 +65,6 @@ const SearchParams = () => {
             ))}
           </select>
         </label>
-
         <label htmlFor="breed">
           Breed
           <select disabled={!breeds.length} id="breed" name="breed">
@@ -65,9 +72,15 @@ const SearchParams = () => {
             {breeds.map(breed => <option key={breed} value={breed}>{breed}</option>)}
           </select>
         </label>
-        <button>Submit</button>
+        {isPending ? (
+          <div className="mini loading-pane">
+            <h2 className="loader">🐶</h2>
+          </div>
+        ) : (
+          <button>Submit</button>
+        )}
       </form>
-      <Results pets={pets}/>
+      {renderedPets}
     </div>
   );
 };
