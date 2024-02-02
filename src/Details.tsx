@@ -5,20 +5,27 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { Params } from 'react-router-dom';
 
 import AdoptedPetContext from './AdoptedPetContext';
 import Carousel from './Carousel';
 import ErrorBoundary from './ErrorBoundary';
 import fetchPet from './fetchPet';
+import { PetAPIResponse } from './APIResponse.type';
+import { Pet } from './APIResponse.type';
 
 const Modal = lazy(() => import('./Modal'));
 
 const Details = () => {
+	const { id }: Readonly<Params<string>> = useParams();
+	if (!id) {
+		throw new Error('Why did you not give me an id? I have no id...');
+	}
+
 	const [showModal, setShowModal] = useState(false);
 	const navigate = useNavigate();
 	const [_, setAdoptedPet] = useContext(AdoptedPetContext);
-	const { id } = useParams();
-	const results = useQuery({ queryKey: ['details', id], queryFn: fetchPet });
+	const results = useQuery<PetAPIResponse>({ queryKey: ['details', id], queryFn: fetchPet });
 
 	if (results.isLoading || results.isPending) {
 		return (
@@ -32,7 +39,10 @@ const Details = () => {
 		return <div className="loading-pane">There was an error. Please refresh and try again...</div>;
 	}
 
-	const pet = results?.data?.pets[0];
+	const pet: Pet = results?.data?.pets[0];
+	if (!pet) {
+		throw new Error('No pet!');
+	}
 
 	return (
 		<div className="details">
@@ -63,10 +73,10 @@ const Details = () => {
 	);
 };
 
-const DetailsErrorBoundary = props => {
+const DetailsErrorBoundary = () => {
 	return (
 		<ErrorBoundary fallback={<h2>Oops! <Link to="/">Go back home?</Link></h2>}>
-			<Details {...props}/>
+			<Details/>
 		</ErrorBoundary>
 	);
 };
