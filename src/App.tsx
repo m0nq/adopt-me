@@ -11,6 +11,7 @@ import { Route } from 'react-router-dom';
 
 import AdoptedPetContext from './AdoptedPetContext';
 import { Pet } from './APIResponse.type';
+import { createRoot } from 'react-dom/client';
 
 const DetailsErrorBoundary = lazy(() => import('./Details'));
 const SearchParams = lazy(() => import('./SearchParams'));
@@ -51,3 +52,8 @@ const App = (): ReactElement => {
 };
 
 export default App;
+
+const container = document.querySelector('#root');
+if (!container) throw new Error('No container to render to');
+const root = createRoot(container);
+root.render(<App/>);
