@@ -4,11 +4,13 @@ import { Suspense } from 'react';
 import { lazy } from 'react';
 import { useState } from 'react';
 import React from 'react';
+import { ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import { Routes } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 
 import AdoptedPetContext from './AdoptedPetContext';
+import { Pet } from './APIResponse.type';
 
 const DetailsErrorBoundary = lazy(() => import('./Details'));
 const SearchParams = lazy(() => import('./SearchParams'));
@@ -16,15 +18,14 @@ const SearchParams = lazy(() => import('./SearchParams'));
 const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
-			staleTime: Infinity,
-			cacheTime: Infinity,
-			suspense: true
+			staleTime: 5 * (60 * 1000), // 5mins
+			gcTime: 10 * (60 * 1000) // 10mins
 		}
 	}
 });
 
-const App = () => {
-	const adoptedPet = useState(null);
+const App = (): ReactElement => {
+	const adoptedPet = useState({} as Pet);
 
 	return (
 		<div>

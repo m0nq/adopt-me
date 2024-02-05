@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { lazy } from 'react';
 import { useContext } from 'react';
 import { useState } from 'react';
+import { ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -11,13 +12,12 @@ import AdoptedPetContext from './AdoptedPetContext';
 import Carousel from './Carousel';
 import ErrorBoundary from './ErrorBoundary';
 import fetchPet from './fetchPet';
-import { PetAPIResponse } from './APIResponse.type';
 import { Pet } from './APIResponse.type';
 
 const Modal = lazy(() => import('./Modal'));
 
-const Details = () => {
-	const { id }: Readonly<Params<string>> = useParams();
+const Details = (): ReactElement => {
+	const { id }: Readonly<Params> = useParams();
 	if (!id) {
 		throw new Error('Why did you not give me an id? I have no id...');
 	}
@@ -25,7 +25,7 @@ const Details = () => {
 	const [showModal, setShowModal] = useState(false);
 	const navigate = useNavigate();
 	const [_, setAdoptedPet] = useContext(AdoptedPetContext);
-	const results = useQuery<PetAPIResponse>({ queryKey: ['details', id], queryFn: fetchPet });
+	const results = useQuery({ queryKey: ['details', id], queryFn: fetchPet });
 
 	if (results.isLoading || results.isPending) {
 		return (
@@ -73,7 +73,7 @@ const Details = () => {
 	);
 };
 
-const DetailsErrorBoundary = () => {
+const DetailsErrorBoundary = (): ReactElement => {
 	return (
 		<ErrorBoundary fallback={<h2>Oops! <Link to="/">Go back home?</Link></h2>}>
 			<Details/>

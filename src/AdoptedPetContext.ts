@@ -1,11 +1,15 @@
 import { createContext } from 'react';
-import { Pet } from './APIResponse.type';
+import { Dispatch } from 'react';
+import { SetStateAction } from 'react';
 
-const AdoptedPetContext = createContext<[Pet, () => void]>([
+import { Pet } from './APIResponse.type';
+import { Animal } from './APIResponse.type';
+
+const AdoptedPetContext = createContext<[Pet, Dispatch<SetStateAction<Pet>>]>([
 	{
 		id: 0,
 		name: '',
-		animal: '',
+		animal: '' as Animal,
 		description: '',
 		breed: '',
 		images: [],

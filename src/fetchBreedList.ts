@@ -1,6 +1,8 @@
-const fetchBreedList = async ({ queryKey }) => {
+import { BreedListAPIResponse } from './APIResponse.type';
+import { Animal } from './APIResponse.type';
+
+const fetchBreedList = async ({ queryKey }: { queryKey: ['breeds', Animal] }): Promise<BreedListAPIResponse> => {
 	const animal = queryKey[1];
-	if (!animal) return [];
 	const apiRes = await fetch(`https://pets-v2.dev-apis.com/breeds?animal=${animal}`);
 
 	if (!apiRes.ok) {

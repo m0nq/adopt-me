@@ -1,8 +1,20 @@
 import { Component } from 'react';
+import { ErrorInfo } from 'react';
+import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-export default class ErrorBoundary extends Component {
-	constructor(props) {
+interface Props {
+	children?: ReactNode;
+	fallback?: ReactNode;
+}
+
+interface State {
+	hasError?: boolean;
+}
+
+export default class ErrorBoundary extends Component<Props, State> {
+
+	constructor(props: { children: ReactNode }) {
 		super(props);
 
 		this.state = {
@@ -15,15 +27,15 @@ export default class ErrorBoundary extends Component {
 		fallback: null
 	};
 
-	static getDerivedStateFromError = () => {
+	static getDerivedStateFromError = (): State => {
 		return { hasError: true };
 	};
 
-	componentDidCatch(error, errorInfo) {
+	componentDidCatch(error: Error, errorInfo: ErrorInfo) {
 		console.error('ErrorBoundary component caught an error', error, errorInfo);
 	}
 
-	render() {
+	render(): ReactNode {
 		if (this.state.hasError) {
 			// You can render any custom fallback UI
 			return this.props.fallback || (

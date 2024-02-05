@@ -4,21 +4,24 @@ import { useMemo } from 'react';
 import { useDeferredValue } from 'react';
 import { useState } from 'react';
 import { useContext } from 'react';
+import { FormEvent } from 'react';
+import { ReactElement } from 'react';
 
 import AdoptedPetContext from './AdoptedPetContext';
 import fetchSearch from './fetchSearch';
-import Results from './Results';
 import useBreedList from './useBreedList';
+import { Animal } from './APIResponse.type.js';
+import Results from './Results';
 
-const ANIMALS = ['bird', 'cat', 'dog', 'rabbit', 'reptile'];
+const ANIMALS: Animal[] = ['bird', 'cat', 'dog', 'rabbit', 'reptile'];
 
-const SearchParams = () => {
+const SearchParams = (): ReactElement => {
 	const [requestParams, setRequestParams] = useState({
 		location: '',
-		animal: '',
+		animal: '' as Animal,
 		breed: ''
 	});
-	const [animal, setAnimal] = useState('');
+	const [animal, setAnimal] = useState('' as Animal);
 	const [breeds] = useBreedList(animal);
 	const [isPending, startTransition] = useTransition();
 	const [adoptedPet] = useContext(AdoptedPetContext);
@@ -30,13 +33,13 @@ const SearchParams = () => {
 
 	return (
 		<div className="search-params">
-			<form onSubmit={(e) => {
+			<form onSubmit={(e: FormEvent) => {
 				e.preventDefault();
-				const formData = new FormData(e.target);
+				const formData = new FormData(e.currentTarget as HTMLFormElement);
 				const obj = {
-					animal: formData.get('animal') ?? '',
-					breed: formData.get('breed') ?? '',
-					location: formData.get('location') ?? ''
+					animal: formData.get('animal') as Animal ?? '',
+					breed: formData.get('breed')?.toString() ?? '',
+					location: formData.get('location')?.toString() ?? ''
 				};
 				startTransition(() => {
 					setRequestParams(obj);
@@ -44,7 +47,7 @@ const SearchParams = () => {
 			}}>
 				{adoptedPet ? (
 					<div className="pet image-container">
-						<img src={adoptedPet.images[0]} alt={adoptedPet.name}/>
+						<img src={adoptedPet?.images?.[0]} alt={adoptedPet?.name}/>
 					</div>
 				) : null}
 				<label htmlFor="location">
@@ -55,8 +58,8 @@ const SearchParams = () => {
 					Animal
 					<select id="animal"
 						name="animal"
-						onChange={(e) => setAnimal(e.target.value)}
-						onBlur={(e) => setAnimal(e.target.value)}>
+						onChange={(e) => setAnimal(e.target.value as Animal)}
+						onBlur={(e) => setAnimal(e.target.value as Animal)}>
 						<option/>
 						{ANIMALS.map((animal) => (
 							<option key={animal} value={animal}>

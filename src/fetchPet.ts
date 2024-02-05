@@ -1,4 +1,6 @@
-const fetchPet = async ({ queryKey }) => {
+import { PetAPIResponse } from './APIResponse.type';
+
+const fetchPet = async ({ queryKey }: { queryKey: ['details', string] }): Promise<PetAPIResponse> => {
 	const id = queryKey[1];
 	const apiRes = await fetch(`https://pets-v2.dev-apis.com/pets?id=${id}`);
 
