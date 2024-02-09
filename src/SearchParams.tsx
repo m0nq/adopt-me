@@ -1,33 +1,29 @@
-import { useQuery } from '@tanstack/react-query';
 import { useTransition } from 'react';
 import { useMemo } from 'react';
 import { useDeferredValue } from 'react';
 import { useState } from 'react';
-import { useContext } from 'react';
 import { FormEvent } from 'react';
 import { ReactElement } from 'react';
 
-import AdoptedPetContext from './AdoptedPetContext';
-import fetchSearch from './fetchSearch';
 import useBreedList from './useBreedList';
 import { Animal } from './APIResponse.type.js';
 import Results from './Results';
+import { useAppSelector } from './hooks';
+import { useAppDispatch } from './hooks';
+import { all } from './searchParamsSlice';
+import { useSearchQuery } from './petApiService';
 
 const ANIMALS: Animal[] = ['bird', 'cat', 'dog', 'rabbit', 'reptile'];
 
 const SearchParams = (): ReactElement => {
-	const [requestParams, setRequestParams] = useState({
-		location: '',
-		animal: '' as Animal,
-		breed: ''
-	});
 	const [animal, setAnimal] = useState('' as Animal);
 	const [breeds] = useBreedList(animal);
 	const [isPending, startTransition] = useTransition();
-	const [adoptedPet] = useContext(AdoptedPetContext);
+	const adoptedPet = useAppSelector(({ adoptedPet }) => adoptedPet.value);
+	const requestParams = useAppSelector(({ searchParams }) => searchParams.value);
+	const dispatch = useAppDispatch();
 
-	const results = useQuery({ queryKey: ['search', requestParams], queryFn: fetchSearch });
-	const pets = results?.data?.pets ?? [];
+	const { data: pets = [] } = useSearchQuery(requestParams);
 	const deferredPets = useDeferredValue(pets);
 	const renderedPets = useMemo(() => <Results pets={deferredPets}/>, [deferredPets]);
 
@@ -42,7 +38,7 @@ const SearchParams = (): ReactElement => {
 					location: formData.get('location')?.toString() ?? ''
 				};
 				startTransition(() => {
-					setRequestParams(obj);
+					dispatch(all(obj));
 				});
 			}}>
 				{adoptedPet ? (

@@ -1,18 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
 import { lazy } from 'react';
-import { useContext } from 'react';
 import { useState } from 'react';
 import { ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { Params } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-import AdoptedPetContext from './AdoptedPetContext';
+import { adopt } from './adoptedPetSlice';
 import Carousel from './Carousel';
 import ErrorBoundary from './ErrorBoundary';
-import fetchPet from './fetchPet';
-import { Pet } from './APIResponse.type';
+import { useGetPetQuery } from './petApiService';
 
 const Modal = lazy(() => import('./Modal'));
 
@@ -24,10 +22,10 @@ const Details = (): ReactElement => {
 
 	const [showModal, setShowModal] = useState(false);
 	const navigate = useNavigate();
-	const [_, setAdoptedPet] = useContext(AdoptedPetContext);
-	const results = useQuery({ queryKey: ['details', id], queryFn: fetchPet });
+	const { isLoading, data: pet } = useGetPetQuery(id);
+	const dispatch = useDispatch();
 
-	if (results.isLoading || results.isPending) {
+	if (isLoading) {
 		return (
 			<div className="loading-pane">
 				<h2 className="loader">🐶</h2>
@@ -35,11 +33,6 @@ const Details = (): ReactElement => {
 		);
 	}
 
-	if (results.isError) {
-		return <div className="loading-pane">There was an error. Please refresh and try again...</div>;
-	}
-
-	const pet: Pet = results?.data?.pets[0];
 	if (!pet) {
 		throw new Error('No pet!');
 	}
@@ -58,7 +51,7 @@ const Details = (): ReactElement => {
 							<h1>Would you like to adopt {pet.name}?</h1>
 							<div className="buttons">
 								<button onClick={() => {
-									setAdoptedPet(pet);
+									dispatch(adopt(pet));
 									navigate('/');
 								}}>
 									Yes
