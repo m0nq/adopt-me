@@ -3,6 +3,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [react()],
-	root: 'src'
+	root: 'src',
+	test: {
+		environment: 'happy-dom'
+	}
 });
 

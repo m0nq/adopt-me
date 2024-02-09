@@ -31,13 +31,14 @@ export default class Carousel extends Component<Props> {
 
 		return (
 			<div className="carousel">
-				<img src={images[active]} alt="animal"/>
+				<img data-testid="hero" src={images[active]} alt="animal"/>
 				<div className="carousel-smaller">
 					{images.map((photo, i) => {
 						return (
 							// eslint-disable-next-line
 							<img key={photo}
 								src={photo}
+								data-testid={`thumbnail${i}`}
 								className={i === active ? 'active' : ''}
 								alt="animal thumbnail"
 								onClick={this.handleIndexClick}
